@@ -1,0 +1,18 @@
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+<!--{% load django_bootstrap5 %}-->
+
+{% if latest_streak_list %}
+<ul class="nav nav-list">
+    <li class="nav-header">
+    Deine aktuellen Streaks:
+    </li>
+    <ul>
+    {% for habit in latest_streak_list %}
+      <li>
+        <a href="/trh/{{ habit.id }}/">{{ habit }}</a>
+      </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Keine Streaks vorhanden.</p>
+{% endif %}
