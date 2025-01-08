@@ -181,16 +181,20 @@
 					cell = document.createElement("td");
 					cell.className = "date-picker";
 
-					// TODO: IF is eligible
+					let dateDiff = dateDiffInDays(new Date(year, month, date), today);
 
-					cell.innerHTML = `
-						<form action="{% url 'setentry' habit.id %}" method="post">
-							{% csrf_token %}
-							<input type="hidden" name="year" value="${year}"/>
-							<input type="hidden" name="month" value="${month + 1}"/>
-							<input type="hidden" name="day" value="${date}"/>
-							<input type="submit" value="${date}"/>
-						</form>`; // TODO: make prettier
+					if (dateDiff >= 0 && dateDiff < 16) {
+						cell.innerHTML = `
+							<form action="{% url 'setentry' habit.id %}" method="post">
+								{% csrf_token %}
+								<input type="hidden" name="year" value="${year}"/>
+								<input type="hidden" name="month" value="${month + 1}"/>
+								<input type="hidden" name="day" value="${date}"/>
+								<input type="submit" value="${date}"/>
+							</form>`; // TODO: make prettier
+					} else {
+						cell.innerHTML = "<span>" + date + "</span>";
+					}
 
 					// Check if there are entries on this date
 					if (hasEntryOnDate(date, month, year, entryDates)) {
@@ -233,5 +237,15 @@
 	function daysInMonth(iMonth, iYear) {
 		return 32 - new Date(iYear, iMonth, 32).getDate();
 	}
+
+	// a and b are javascript Date objects
+	function dateDiffInDays(a, b) {
+		const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+		const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+		const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+		return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+	}
+
 </script>
 </html>
