@@ -6,12 +6,12 @@
 <body>
     <div class="wrapper">
 		<div class="container-calendar">
-			<div id="left">
+			<div id="heading">
 				<h1>BLATT DER STREAKS</h1>
 				<h2>{{ habit.title }}</h2>
 				<h3>{{ habit.description }}</h3>
 			</div>
-			<div id="right">
+			<div id="content">
 				<h3 id="monthAndYear"></h3>
 				<div class="button-container-calendar">
 					<button id="previous"
@@ -24,8 +24,7 @@
 					</button>
 				</div>
 				<table class="table-calendar"
-					id="calendar"
-					data-lang="en">
+					id="calendar">
 					<thead id="thead-month"></thead>
 					<!-- Table body for displaying the calendar -->
 					<tbody id="calendar-body"></tbody>
@@ -90,10 +89,16 @@
 		return years;
 	}
 
-	// Initialize date-related letiables
+	// Initialize date-related letiables, potentially reading URL query params
 	today = new Date();
 	currentMonth = today.getMonth();
+	if ('{{mo}}' != null && '{{mo}}' != 'None') {
+		currentMonth = Number('{{mo}}') - 1;
+	}
 	currentYear = today.getFullYear();
+	if ('{{yr}}' != null && '{{yr}}' != 'None') {
+		currentYear = '{{yr}}';
+	}
 
 	months = [
 		"January",
@@ -174,20 +179,19 @@
 					break;
 				} else {
 					cell = document.createElement("td");
-					cell.setAttribute("data-date", date);
-					cell.setAttribute("data-month", month + 1);
-					cell.setAttribute("data-year", year);
-					cell.setAttribute("data-month_name", months[month]);
 					cell.className = "date-picker";
-					cell.innerHTML = "<span>" + date + "</span";
 
-					if (
-						date === today.getDate() &&
-						year === today.getFullYear() &&
-						month === today.getMonth()
-					) {
-						cell.className = "date-picker selected";
-					}
+					// TODO: IF is eligible
+
+					cell.innerHTML = `
+						<form action="{% url 'setentry' habit.id %}" method="post">
+							{% csrf_token %}
+							<input type="hidden" name="year" value="${year}"/>
+							<input type="hidden" name="month" value="${month + 1}"/>
+							<input type="hidden" name="day" value="${date}"/>
+							<input type="submit" value="${date}"/>
+						</form>`; // TODO: make prettier
+
 					// Check if there are entries on this date
 					if (hasEntryOnDate(date, month, year, entryDates)) {
 						cell.classList.add("event-marker");
