@@ -1,11 +1,13 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 import random
 import string
 
 
 class Habit(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     default_title = 'New Challenge ' + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
     title = models.CharField(max_length=40, default=default_title)
     description = models.CharField(max_length=250, blank=True, default='')

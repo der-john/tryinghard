@@ -8,7 +8,7 @@
     <ul>
     {% for habit in latest_streak_list %}
       <li>
-        <a href="/trh/{{ habit.id }}/">{{ habit }}</a>
+        <a href="/trh/{{ u_id }}/{{ habit.id }}/">{{ habit }}</a>
       </li>
     {% endfor %}
     </ul>
