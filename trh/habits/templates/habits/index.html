@@ -1,17 +1,28 @@
-<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>My STREAKS</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
 
-{% if latest_streak_list %}
-<ul class="nav nav-list">
-    <li class="nav-header">
-    Deine aktuellen Streaks:
-    </li>
-    <ul>
-    {% for habit in latest_streak_list %}
-      <li>
-        <a href="/trh/{{ u_id }}/{{ habit.id }}/">{{ habit }}</a>
-      </li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>Keine Streaks vorhanden.</p>
-{% endif %}
+  <ul class="nav nav-list">
+    {% if latest_streak_list %}
+        <li class="nav-header">
+        Your current STREAKS:
+        </li>
+        <ul>
+        {% for habit in latest_streak_list %}
+          <li>
+            <a href="/trh/{{ u_id }}/{{ habit.id }}/">{{ habit }}</a>
+          </li>
+        {% endfor %}
+    {% else %}
+        <li><p>No STREAKS created yet.</p></li>
+    {% endif %}
+  
+    <a class="active" href="/trh/{{ u_id }}/create">Create a new STREAK</a>
+  </ul>
+  </body>
+</html>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">

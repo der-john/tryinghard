@@ -81,7 +81,32 @@ def setentry(request, u_id, h_id):
     return HttpResponseRedirect("/trh/" + str(u_id) + "/" + str(h_id) + "?yr=" + year_str + "&mo=" + month_str)
 
 
-# Define a view function for the login page
+def create(request, u_id):
+ 
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    # The following will get more complicated after sharing
+    if request.user.id != u_id:
+        return HttpResponseForbidden()
+
+    if request.method == "POST":
+        hname = request.POST.get('hname')
+        hdescription = request.POST.get('hdescription')
+
+        if request.POST.get('hstartdate'):
+            start_date = request.POST.get('hstartdate')
+            new_habit = Habit.objects.create(
+                user=request.user, title=hname, description=hdescription, start_date=start_date)
+        else:
+            new_habit = Habit.objects.create(user=request.user, title=hname, description=hdescription)
+        Habit.save(new_habit)
+        h_id = new_habit.id
+        return redirect('/trh/' + str(u_id) + "/" + str(h_id))
+
+    # Render the create page template (GET request)
+    return render(request, 'habits/create.html', { "u_id" : u_id })
+
+
 def login_page(request):
     # Check if the HTTP request method is POST (form submission)
     if request.method == "POST":

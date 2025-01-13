@@ -12,11 +12,10 @@ class Habit(models.Model):
     title = models.CharField(max_length=40, default=default_title)
     description = models.CharField(max_length=250, blank=True, default='')
     start_date = models.DateField("habit start date", default=timezone.now())
-    is_multi_entry_day = models.BooleanField(default=False)
     is_intensity = models.BooleanField(default=False)
 
     def __str__(self):
-        return " : ".join([self.title, self.description])
+        return self.title
 
 
 class Entry(models.Model):
