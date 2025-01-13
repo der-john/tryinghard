@@ -110,7 +110,7 @@ def create(request, u_id):
             new_habit = Habit.objects.create(user=request.user, title=hname, description=hdescription)
         Habit.save(new_habit)
         h_id = new_habit.id
-        return redirect('/trh/' + str(u_id) + "/" + str(h_id))
+        return redirect('/trh/' + str(u_id) + "/" + str(h_id) + "/?color=%23008000")
 
     # Render the create page template (GET request)
     return render(request, 'habits/create.html', { "u_id" : u_id })
