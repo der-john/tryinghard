@@ -1,5 +1,5 @@
 import datetime
-import logging
+import urllib.parse
 
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import redirect, render
@@ -40,8 +40,9 @@ def detail(request, u_id, h_id):
     try:
         nav_streak_list = Habit.objects.filter(user=request.user).exclude(id=h_id).order_by("-start_date")[:5]
         habit = Habit.objects.get(pk=h_id)
-        entries = Entry.objects.filter(habit=habit)
+        entries = Entry.objects.filter(habit=habit).order_by("date")
         entry_dates = [[e.date.year, e.date.month, e.date.day] for e in entries]
+        entry_colors = [e.color for e in entries]
     except Habit.DoesNotExist:
         raise Http404("Habit / Streak does not exist")
     return render(request, "habits/detail.html", {
@@ -49,8 +50,10 @@ def detail(request, u_id, h_id):
             "habit": habit,
             "nav_streak_list": nav_streak_list,
             "entry_dates": entry_dates,
+            "entry_colors": entry_colors,
             "yr": request.GET.get("yr"),
-            "mo": request.GET.get("mo")
+            "mo": request.GET.get("mo"),
+            "entry_color": request.GET.get("color")
         })
 
 
@@ -68,17 +71,23 @@ def setentry(request, u_id, h_id):
         month_str = request.POST["month"]
         day = int(request.POST["day"])
         e_date = datetime.date(int(year_str), int(month_str), day)
+
+        color = urllib.parse.unquote(request.POST["color"])
+
         entries = Entry.objects.filter(habit=habit).filter(date=e_date)
 
         if len(entries) == 0:
-            new_entry = Entry.objects.create(habit=habit, date=e_date)
+            new_entry = Entry.objects.create(habit=habit, date=e_date, color=color)
             Entry.save(new_entry)
         else:
             entries.delete()
 
     except Habit.DoesNotExist:
         raise Http404("Habit / Streak does not exist")
-    return HttpResponseRedirect("/trh/" + str(u_id) + "/" + str(h_id) + "?yr=" + year_str + "&mo=" + month_str)
+
+    color_param = urllib.parse.quote(color)
+    return HttpResponseRedirect(
+        "/trh/" + str(u_id) + "/" + str(h_id) + "?yr=" + year_str + "&mo=" + month_str + "&color=" + color_param)
 
 
 def create(request, u_id):

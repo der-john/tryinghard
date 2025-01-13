@@ -23,5 +23,6 @@ class Entry(models.Model):
     date = models.DateField("date of entry", default=timezone.now())
     entry_text = models.CharField(max_length=400, blank=True, default='')
     intensity = models.IntegerField(default=5, blank=True)
+    color = models.CharField(max_length=400, default='#008000')
     def __str__(self):
         return self.entry_text

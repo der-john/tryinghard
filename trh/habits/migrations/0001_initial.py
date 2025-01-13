@@ -30,9 +30,10 @@ class Migration(migrations.Migration):
             name='Entry',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(default=datetime.datetime(2025, 1, 10, 9, 23, 52, 651487, tzinfo=datetime.timezone.utc), verbose_name='date of entry')),
+                ('date', models.DateField(default=datetime.datetime(2025, 1, 10, 11, 50, 5, 462134, tzinfo=datetime.timezone.utc), verbose_name='date of entry')),
                 ('entry_text', models.CharField(blank=True, default='', max_length=400)),
                 ('intensity', models.IntegerField(blank=True, default=5)),
+                ('color', models.CharField(default='#008000', max_length=400)),
                 ('habit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='habits.habit')),
             ],
         ),
