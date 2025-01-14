@@ -184,22 +184,47 @@
 	
 			const entryDates = getEntryDates();
 	
-			let date = 1;
+			let dateNumber = 1;
+			let dateOfEntry = 1;
 			for (let i = 0; i < 6; i++) {
+
+				// row containing dates
 				let row = document.createElement("tr");
 				for (let j = 0; j < 7; j++) {
-					if (i === 0 && j < firstDay) {
+					if ((i === 0 && j < firstDay) || (dateNumber > daysInMonth(month, year) && j > 0)) {
 						cell = document.createElement("td");
 						cellText = document.createTextNode("");
 						cell.appendChild(cellText);
 						row.appendChild(cell);
-					} else if (date > daysInMonth(month, year)) {
+					} else if (dateNumber > daysInMonth(month, year)) {
 						break;
 					} else {
 						cell = document.createElement("td");
+						cell.className = "date-cell";
+						cell.innerHTML = "<span>" + dateNumber + "</span>";
+	
+						row.appendChild(cell);
+						dateNumber++;
+					}
+				}
+				tbl.appendChild(row);
+
+				// row containing events + event forms
+				let rowE = document.createElement("tr");
+				for (let j = 0; j < 7; j++) {
+					if ((i === 0 && j < firstDay) || (dateOfEntry > daysInMonth(month, year) && j > 0)) {
+						cell = document.createElement("td");
+						cellText = document.createTextNode("");
+						cell.appendChild(cellText);
+						rowE.appendChild(cell);
+					} else if (dateOfEntry > daysInMonth(month, year)) {
+						break;
+					} else {
+
+						cell = document.createElement("td");
 						cell.className = "date-picker";
 	
-						let dateDiff = dateDiffInDays(new Date(year, month, date), today);
+						let dateDiff = dateDiffInDays(new Date(year, month, dateOfEntry), today);
 	
 						if ('{{is_viewer | safe}}' == 'None' && dateDiff >= 0 && dateDiff < 16) {
 							cell.innerHTML = `
@@ -207,26 +232,24 @@
 									{% csrf_token %}
 									<input type="hidden" name="year" value="${year}"/>
 									<input type="hidden" name="month" value="${month + 1}"/>
-									<input type="hidden" name="day" value="${date}"/>
+									<input type="hidden" name="day" value="${dateOfEntry}"/>
 									<input type="hidden" name="color" value="${color}"/>
-									<input type="submit" value="${date}"/>
+									<input type="submit" value=""/>
 								</form>`; // TODO: make prettier CSS-wise
-						} else {
-							cell.innerHTML = "<span>" + date + "</span>";
 						}
 
 						// Check if there are entries on this date
-						let entryIndex = getEntryIndexOnDate(date, month, year, entryDates);
+						let entryIndex = getEntryIndexOnDate(dateOfEntry, month, year, entryDates);
 						if (entryIndex != null) {
 							cell.classList.add("event-marker");
 							cell.setAttribute("style", "background-color: " + entryColors[entryIndex]);
 						}
 	
-						row.appendChild(cell);
-						date++;
+						rowE.appendChild(cell);
+						dateOfEntry++;
 					}
 				}
-				tbl.appendChild(row);
+				tbl.appendChild(rowE);
 			}
 		}
 	

@@ -9,10 +9,10 @@
   {% include "habits/navbar.html" %}
 
   <ul class="nav nav-list">
+    <li class="nav-header">
+    Your current STREAKS:
+    </li>
     {% if latest_streak_list %}
-        <li class="nav-header">
-        Your current STREAKS:
-        </li>
         <ul>
         {% for habit in latest_streak_list %}
           <li>
@@ -26,10 +26,10 @@
     <a class="active" href="/trh/{{ u_id }}/create">Create a new STREAK</a>
   </ul>
   <ul class="nav nav-list">
+    <li class="nav-header">
+    STREAKS currently shared with you:
+    </li>
     {% if shared_streak_list %}
-        <li class="nav-header">
-        STREAKS currently shared with you:
-        </li>
         <ul>
         {% for habit in shared_streak_list %}
           <li>

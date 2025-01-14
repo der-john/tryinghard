@@ -77,10 +77,24 @@ body {
 	padding: 5px;
 	border: 1px solid #e2e2e2;
 	text-align: center;
-	height: 60px;
+}
+
+/* Date cell */
+/* Day-specific styling */
+.date-cell {
+	height: 0px;
+}
+
+.date-cell:nth-child(1) {
+	color: red;
+	/* Sunday */
 }
 
 /* Date picker */
+.date-picker {
+	height: 60px;
+}
+
 .date-picker.selected {
 	background-color: #f2f2f2;
 	font-weight: bold;
@@ -89,12 +103,6 @@ body {
 
 .date-picker.selected span {
 	border-bottom: 2px solid currentColor;
-}
-
-/* Day-specific styling */
-.date-picker:nth-child(1) {
-	color: red;
-	/* Sunday */
 }
 
 /* Hover effect for date cells */
