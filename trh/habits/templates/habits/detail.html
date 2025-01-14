@@ -19,8 +19,9 @@
 				<a class="nav-item nav-link" href="/trh/{{ u_id }}/{{ habit.id }}/">{{ habit }}</a>
 			{% endfor %}
 			<a class="nav-item nav-link active" href="/trh/{{ u_id }}/create">Create</a>
-			<a class="nav-item nav-link disabled" href="#">Analytics</a>
-			<a class="nav-item nav-link disabled" href="/trh/{{ u_id }}/share?h_id={{ h_id }}">Share</a>
+			{% if not is_viewer %}
+				<a class="nav-item nav-link" href="/trh/{{ u_id }}/share?h_id={{ habit.id }}">Share</a>
+			{% endif %}
 		  </div>
 		  <ul class="navbar-nav ml-auto">
 			<a class="nav-item nav-link" href="/trh/logout">Logout</a>
@@ -100,7 +101,11 @@
 	
 			monthAndYear = document.getElementById("monthAndYear");
 
-			color = decodeURIComponent('{{entry_color}}');
+			if ('{{entry_color}}' == 'None') {
+				color = '#008000';
+			} else {
+				color = decodeURIComponent('{{entry_color}}');
+			}
 			document.getElementById("entryColor").value = color;
 	
 			showCalendar(currentMonth, currentYear);
@@ -201,7 +206,6 @@
 			const entryDates = getEntryDates();
 	
 			let date = 1;
-			let k = 0;
 			for (let i = 0; i < 6; i++) {
 				let row = document.createElement("tr");
 				for (let j = 0; j < 7; j++) {
@@ -231,13 +235,12 @@
 						} else {
 							cell.innerHTML = "<span>" + date + "</span>";
 						}
-	
+
 						// Check if there are entries on this date
-						let entry = getEntryOnDate(date, month, year, entryDates);
-						if (entry != null) {
+						let entryIndex = getEntryIndexOnDate(date, month, year, entryDates);
+						if (entryIndex != null) {
 							cell.classList.add("event-marker");
-							cell.setAttribute("style", "background-color: " + entryColors[k]);
-							k++;
+							cell.setAttribute("style", "background-color: " + entryColors[entryIndex]);
 						}
 	
 						row.appendChild(cell);
@@ -260,12 +263,13 @@
 			return entryDates;
 		}
 
-		function getEntryOnDate(date, month, year, entryDates) {
+		function getEntryIndexOnDate(date, month, year, entryDates) {
 	
 			let thisDate = new Date(year, month, date);
-			let entry = entryDates.find(entry => {return entry.getTime() == thisDate.getTime()})
-			if (entry != null) {
-				return entry;
+			for (i = 0; i < entryDates.length; i++) {
+				if (entryDates[i].getTime() == thisDate.getTime()) {
+					return i;
+				}
 			}
 			return null;
 		}

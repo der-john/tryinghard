@@ -124,7 +124,6 @@ def share(request, u_id):
  
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
-    # The following will get more complicated after sharing
     if request.user.id != u_id:
         return HttpResponseForbidden()
 
