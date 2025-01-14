@@ -8,10 +8,7 @@ class EntryInline(admin.StackedInline):
 
 class HabitAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {"fields": ["user", "start_date"]}),
-        ("Habit Information",
-            {"fields": ["title", "description", "is_intensity"],
-             "classes": ["collapse"]}),
+        (None, {"fields": ["user", "title", "description", "start_date", "viewers", "is_intensity"]}),
     ]
     inlines = [EntryInline]
 

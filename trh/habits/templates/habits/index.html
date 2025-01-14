@@ -23,6 +23,21 @@
   
     <a class="active" href="/trh/{{ u_id }}/create">Create a new STREAK</a>
   </ul>
+  <ul class="nav nav-list">
+    {% if shared_streak_list %}
+        <li class="nav-header">
+        STREAKS currently shared with you:
+        </li>
+        <ul>
+        {% for habit in shared_streak_list %}
+          <li>
+            <a href="/trh/{{ habit.user.id }}/{{ habit.id }}/?is_viewer=true">{{ habit }}</a>
+          </li>
+        {% endfor %}
+    {% else %}
+        <li><p>No STREAKS have been shared with you yet.</p></li>
+    {% endif %}
+  </ul>
   </body>
 </html>
 <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">

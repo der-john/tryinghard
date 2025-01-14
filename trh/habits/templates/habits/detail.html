@@ -20,7 +20,7 @@
 			{% endfor %}
 			<a class="nav-item nav-link active" href="/trh/{{ u_id }}/create">Create</a>
 			<a class="nav-item nav-link disabled" href="#">Analytics</a>
-			<a class="nav-item nav-link disabled" href="#">Share</a>
+			<a class="nav-item nav-link disabled" href="/trh/{{ u_id }}/share?h_id={{ h_id }}">Share</a>
 		  </div>
 		  <ul class="navbar-nav ml-auto">
 			<a class="nav-item nav-link" href="/trh/logout">Logout</a>
@@ -78,7 +78,7 @@
 			</div>
 		</div>
 	</div>
-	<script src="/static/bootstrap/js/bootstrap.js" type="text/javascript"></script>
+	<!--<script src="/static/bootstrap/js/bootstrap.js" type="text/javascript"></script>-->
 	<script type="text/javascript">
 	
 		const entryDatesArr = JSON.parse('{{ entry_dates | escapejs }}');
@@ -90,15 +90,13 @@
 			createYear = generateYearRange(2020, 2050);
 			document.getElementById("year").innerHTML = createYear;
 	
-			$dataHead = "<tr>";
+			tHead = "<tr>";
 			for (dhead in days) {
-				$dataHead += "<th data-days='" +
-					days[dhead] + "'>" +
-					days[dhead] + "</th>";
+				tHead += "<th >" + days[dhead] + "</th>";
 			}
-			$dataHead += "</tr>"; // TODO: simplify
+			tHead += "</tr>";
 	
-			document.getElementById("thead-month").innerHTML = $dataHead;
+			document.getElementById("thead-month").innerHTML = tHead;
 	
 			monthAndYear = document.getElementById("monthAndYear");
 
@@ -220,7 +218,7 @@
 	
 						let dateDiff = dateDiffInDays(new Date(year, month, date), today);
 	
-						if (dateDiff >= 0 && dateDiff < 16) {
+						if ('{{is_viewer | safe}}' == 'None' && dateDiff >= 0 && dateDiff < 16) {
 							cell.innerHTML = `
 								<form action="{% url 'setentry' u_id habit.id %}" method="post">
 									{% csrf_token %}

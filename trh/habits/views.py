@@ -21,9 +21,12 @@ def index(request, u_id):
         return HttpResponseForbidden()
 
     latest_streak_list = Habit.objects.filter(user=request.user).order_by("-start_date")[:5]
+    shared_streak_list = request.user.shared_habits.all()
+
     template = loader.get_template("habits/index.html")
     context = {
         "latest_streak_list": latest_streak_list,
+        "shared_streak_list": shared_streak_list,
         "u_id": u_id
     }
     return HttpResponse(template.render(context, request))
@@ -33,21 +36,22 @@ def detail(request, u_id, h_id):
 
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
-    # The following will get more complicated after sharing
-    if request.user.id != u_id:
+
+    habit = Habit.objects.get(pk=h_id)
+    if request.user.id != u_id and request.user not in habit.viewers.all():
         return HttpResponseForbidden()
 
     try:
         nav_streak_list = Habit.objects.filter(user=request.user).exclude(id=h_id).order_by("-start_date")[:5]
-        habit = Habit.objects.get(pk=h_id)
         entries = Entry.objects.filter(habit=habit).order_by("date")
         entry_dates = [[e.date.year, e.date.month, e.date.day] for e in entries]
         entry_colors = [e.color for e in entries]
     except Habit.DoesNotExist:
         raise Http404("Habit / Streak does not exist")
     return render(request, "habits/detail.html", {
-            "u_id" : u_id,
+            "u_id" : request.user.id,
             "habit": habit,
+            "is_viewer": request.GET.get("is_viewer"),
             "nav_streak_list": nav_streak_list,
             "entry_dates": entry_dates,
             "entry_colors": entry_colors,
@@ -114,6 +118,31 @@ def create(request, u_id):
 
     # Render the create page template (GET request)
     return render(request, 'habits/create.html', { "u_id" : u_id })
+
+
+def share(request, u_id):
+ 
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+    # The following will get more complicated after sharing
+    if request.user.id != u_id:
+        return HttpResponseForbidden()
+
+    if request.method == "POST":
+        h_id = request.POST.get('habitId')
+        viewer_id = request.POST.get('viewerId')
+        viewer = User.objects.get(id=viewer_id)
+        Habit.objects.get(pk=h_id).viewers.add(viewer)
+
+        return redirect('/trh/' + str(u_id) + "/" + str(h_id) + "/?color=%23008000")
+
+    # Render the share page template (GET request)
+    h_id = request.GET.get('h_id')
+    current_habit = Habit.objects.get(pk=h_id)
+    users = User.objects.exclude(id=u_id)
+    habits = Habit.objects.filter(user=request.user).exclude(id=h_id).order_by("-start_date")[:5]
+    return render(request, 'habits/share.html',
+        { "u_id" : u_id, "current_habit" : current_habit, "users" : users, "habits" : habits })
 
 
 def login_page(request):
