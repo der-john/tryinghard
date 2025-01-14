@@ -50,6 +50,7 @@ def detail(request, u_id, h_id):
         raise Http404("Habit / Streak does not exist")
     return render(request, "habits/detail.html", {
             "u_id" : request.user.id,
+            "uname" : request.user.username,
             "habit": habit,
             "is_viewer": request.GET.get("is_viewer"),
             "nav_streak_list": nav_streak_list,
@@ -117,7 +118,7 @@ def create(request, u_id):
         return redirect('/trh/' + str(u_id) + "/" + str(h_id) + "/?color=%23008000")
 
     # Render the create page template (GET request)
-    return render(request, 'habits/create.html', { "u_id" : u_id })
+    return render(request, 'habits/create.html', { "u_id" : u_id, "uname" : request.user.username })
 
 
 def share(request, u_id):
@@ -141,7 +142,7 @@ def share(request, u_id):
     users = User.objects.exclude(id=u_id)
     habits = Habit.objects.filter(user=request.user).exclude(id=h_id).order_by("-start_date")[:5]
     return render(request, 'habits/share.html',
-        { "u_id" : u_id, "current_habit" : current_habit, "users" : users, "habits" : habits })
+        { "u_id" : u_id, "uname" : request.user.username, "current_habit" : current_habit, "users" : users, "habits" : habits })
 
 
 def login_page(request):

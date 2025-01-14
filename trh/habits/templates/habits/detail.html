@@ -6,28 +6,7 @@
     <link href="/static/g4g/css/cal-style.css" rel="stylesheet"/>
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
-		<a class="navbar-brand" href="/trh/{{u_id}}/">MY STREAKS</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-		  <span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-		  <ul class="navbar-nav">
-			<a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-
-			{% for habit in nav_streak_list %}
-				<a class="nav-item nav-link" href="/trh/{{ u_id }}/{{ habit.id }}/">{{ habit }}</a>
-			{% endfor %}
-			<a class="nav-item nav-link active" href="/trh/{{ u_id }}/create">Create</a>
-			{% if not is_viewer %}
-				<a class="nav-item nav-link" href="/trh/{{ u_id }}/share?h_id={{ habit.id }}">Share</a>
-			{% endif %}
-		  </div>
-		  <ul class="navbar-nav ml-auto">
-			<a class="nav-item nav-link" href="/trh/logout">Logout</a>
-		  </div>
-		</ul>
-	</nav>
+	{% include "habits/navbar.html" %}
     <div class="wrapper">
 		<div class="container-calendar">
 			<div id="heading">
